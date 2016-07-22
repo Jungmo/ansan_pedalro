@@ -14,12 +14,12 @@ url = 'http://www.pedalro.kr/station/station.do?method=stationState&menuIdx=st_0
 
 ts = time.strftime("%Y-%m-%d-%I-%M", time.localtime())
 filename = str(ts) + ".csv"
-f = open(filename, "w")
 count = 1
-f.write("ts,")
+
 while True:
     print("%d번째 저장입니다.") % (count)
     ts = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    str = ''
 
     for line in urllib2.urlopen(url):
         if "			title : " in line:
@@ -29,21 +29,14 @@ while True:
             s = s.split("|")
             dict[s[0]] = s[3]
     if count == 1:
-        for i in dict.keys():
-            f.write(str(i) + ",")
-        f.write("\n")
-        f.write(ts + ",")
-        for i in dict.keys():
-            f.write(str(dict[i]) + ",")
-        f.write("\n")
+        str += 'ts,' + ",".join(dict.keys()) + '\n'
 
-    else:
-        f.write(ts + ",")
-        for i in dict.keys():
-             f.write(str(dict[i]) + ",")
-        f.write("\n")
+    str += ts + "," + ",".join(dict.values()) + '\n'
 
     count += 1
+    print(str)
+    f = open(filename, "a")
+    f.write(str)
+    f.close()
     dict.clear()
     time.sleep(args.interval)
-
