@@ -4,6 +4,8 @@ import string
 import urllib2
 import argparse
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--interval', type=int, default='300', help='seconds')
@@ -39,14 +41,14 @@ while True:
             s = s.split("|")
             dict[s[0]] = s[3]
     if count == 1:
-        str += 'ts,' + ",".join(dict.keys()) + '\n'
+        # Add unicode BOM at the beginning of the file
+        str += u'\ufeff' + 'ts,' + ",".join(dict.keys()) + '\n'
 
     str += ts + "," + ",".join(dict.values()) + '\n'
 
     count += 1
-    print(str)
     f = open(filename, "a")
-    f.write(str)
+    f.write(str.encode("utf-8"))
     f.close()
     dict.clear()
     time.sleep(args.interval)
