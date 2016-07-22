@@ -17,11 +17,21 @@ filename = str(ts) + ".csv"
 count = 1
 
 while True:
+    response = ''
+    try :
+        response = urllib2.urlopen(url);
+    except urllib2.URLError, err:
+        print "URL Open Error :", err.reason
+        # 나중에 GUI 만들면 자동으로 STOP되게 하던가
+        # 일단은 10초후에 재시도하도록 해놓음
+        time.sleep(args.interval)
+        continue
+
     print("%d번째 저장입니다.") % (count)
     ts = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
     str = ''
 
-    for line in urllib2.urlopen(url):
+    for line in response:
         if "			title : " in line:
             s = line.lstrip()
             s = s.lstrip("title : '")
