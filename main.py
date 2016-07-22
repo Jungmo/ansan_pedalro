@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 import time
+import string
 import urllib2
 import argparse
 import sys
-import os
 reload(sys)
 sys.setdefaultencoding('utf8')
-
 parser = argparse.ArgumentParser()
 
 parser.add_argument('--interval', type=int, default='300', help='seconds')
@@ -16,11 +15,7 @@ dict = {}
 url = 'http://www.pedalro.kr/station/station.do?method=stationState&menuIdx=st_01'
 
 ts = time.strftime("%Y-%m-%d-%I-%M", time.localtime())
-path = "../repo/csv"
 filename = str(ts) + ".csv"
-filename = os.path.join(path, filename)
-
-print filename
 count = 1
 
 while True:
@@ -51,11 +46,9 @@ while True:
 
     str += ts + "," + ",".join(dict.values()) + '\n'
 
-    print(str)
+    count += 1
     f = open(filename, "a")
     f.write(str.encode("utf-8"))
     f.close()
-
     dict.clear()
-    count += 1
     time.sleep(args.interval)
